@@ -1,0 +1,7 @@
+FROM gcr.io/kaniko-project/executor:debug
+
+WORKDIR /
+
+ADD . /workspace
+
+WORKDIR /workspace

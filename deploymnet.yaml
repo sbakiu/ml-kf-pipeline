@@ -1,0 +1,50 @@
+---
+apiVersion: machinelearning.seldon.io/v1alpha2
+kind: SeldonDeployment
+metadata:
+  labels:
+    app: seldon
+  name: "seldon-deployment"
+  namespace: seldon
+spec:
+  annotations:
+    project_name: NLP Pipeline
+    deployment_version: v1
+  name: "seldon-deployment"
+  predictors:
+    - componentSpecs:
+        - spec:
+            containers:
+              - image: tokenizeserving:1.0.0
+                imagePullPolicy: IfNotPresent
+                name: tokenizeserving
+              - image: vecotrizeserving:1.0.0
+                imagePullPolicy: IfNotPresent
+                name: vecotrizeserving
+              - image: lrserving:0.1
+                imagePullPolicy: IfNotPresent
+                name: lrserving
+            terminationGracePeriodSeconds: 20
+      graph:
+        children:
+          - name: vecotrizeserving
+            endpoint:
+              type: REST
+            type: MODEL
+            modelName: src.steps.tfidftransformer.TFIDFTransformer
+            children:
+              - name: lrserving
+                endpoint:
+                  type: REST
+                type: MODEL
+                modelName: src.steps.lrclassifier.LRClassifier
+                children: []
+        name: tokenizeserving
+        endpoint:
+          type: REST
+        type: MODEL
+        modelName: src.steps.tokenize.Tokenize
+      name: single-model
+      replicas: 1
+      annotations:
+        predictor_version: v1
