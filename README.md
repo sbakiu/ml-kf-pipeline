@@ -23,7 +23,7 @@ kubectl apply -k env/platform-agnostic/
 kubectl wait applications/pipeline -n kubeflow --for condition=Ready --timeout=1800s
 kubectl port-forward -n kubeflow svc/ml-pipeline-ui 8080:80
 ```
-and avigate to `localhost:8080` to verify installation.
+and navigate to `localhost:8080` to verify installation.
 
  4. Install [helm](https://helm.sh/). Follow instructions https://helm.sh/docs/intro/install/
  
